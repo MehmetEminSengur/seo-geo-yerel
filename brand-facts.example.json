@@ -1,0 +1,20 @@
+{
+  "brandName": "Mağaza Adı",
+  "voice": "samimi, uzman, sade; satış baskısı yapmayan, işletme sahibine yardım eden",
+  "isManufacturer": false,
+  "competitors": ["rakip marka 1", "rakip marka 2"],
+  "facts": [
+    {
+      "id": "kurulus",
+      "text": "Mağaza Adı 2005'ten beri bu sektörde hizmet veriyor.",
+      "preservePattern": "\\b2005\\b"
+    },
+    {
+      "id": "teslimat",
+      "text": "Saat 15:00'e kadar verilen siparişler aynı gün kargoya verilir."
+    }
+  ],
+  "keywordRules": {
+    "offTopic": []
+  }
+}

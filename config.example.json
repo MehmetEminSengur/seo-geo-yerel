@@ -1,0 +1,34 @@
+{
+  "store": {
+    "platform": "shopify",
+    "domain": "magazam.myshopify.com",
+    "publicUrl": "https://www.magazam.com",
+    "brandName": "Mağaza Adı",
+    "blogHandle": "news",
+    "apiVersion": "2026-07"
+  },
+  "mode": "approval",
+  "engines": {
+    "text": "codex",
+    "image": "product-image"
+  },
+  "keywords": {
+    "source": "free",
+    "language": "tr",
+    "locationCode": 2792,
+    "autocompleteDepth": 1
+  },
+  "limits": {
+    "dataforseo": { "totalUsd": 1, "dailyUsd": 0.25 },
+    "text": { "dailyCalls": 40 }
+  },
+  "schedule": {
+    "syncEveryHours": 168,
+    "keywordsEveryHours": 168,
+    "generateEveryHours": 24,
+    "batchSize": 5
+  },
+  "cooldownDays": 42,
+  "blog": { "enabled": true, "perWeek": 2, "clusterCooldownDays": 14 },
+  "scope": { "collections": "all", "products": "all" }
+}

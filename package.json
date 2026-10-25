@@ -1,0 +1,31 @@
+{
+  "name": "seo-geo-yerel",
+  "version": "0.1.0",
+  "description": "E-ticaret ürün, kategori ve blog sayfalarını Google ve yapay zekâ aramalarına hazırlayan, kendi bilgisayarınızda çalışan SEO/GEO sistemi.",
+  "type": "module",
+  "bin": {
+    "seo-geo": "bin/seo-geo.mjs"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 test/",
+    "tick": "node bin/seo-geo.mjs tick",
+    "status": "node bin/seo-geo.mjs status"
+  },
+  "license": "MIT",
+  "author": "Mehmet Emin Şengür",
+  "keywords": [
+    "seo",
+    "geo",
+    "e-ticaret",
+    "shopify",
+    "ideasoft",
+    "ikas",
+    "yapay-zeka",
+    "codex",
+    "claude-code"
+  ],
+  "private": false
+}
