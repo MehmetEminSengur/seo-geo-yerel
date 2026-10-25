@@ -20,7 +20,10 @@ sade Türkçe konuş, her adımda ne yaptığını tek cümleyle söyle.
 ## Kurulum akışı
 
 ### Adım 0: Ön kontrol
-- `node -v` → 22'den küçükse kullanıcıya nodejs.org'dan LTS kurmasını söyle ve dur.
+- Bu dosyayı GitHub'dan okuyorsan ve repo henüz bilgisayarda yoksa: önce `README.md` en üstündeki
+  "Yapay zekâ ajanı için" adımlarıyla repoyu `~/seo-geo-yerel` klasörüne indir ve o klasörde devam et.
+- `node -v` → 22'den küçükse ya da Node yoksa kullanıcıya nodejs.org'dan LTS sürümünü kurmasını
+  söyle (kurulum bitince sana "tamam" desin) ve bekle.
 - `cp config.example.json config.json`, `cp brand-facts.example.json brand-facts.json`,
   `cp .env.example .env` (Windows'ta `copy`).
 

@@ -1,5 +1,18 @@
 # seo-geo-yerel
 
+> **Yapay zekâ ajanı için (Codex, Claude Code, Antigravity, Gemini CLI):** Kullanıcı sana bu sayfanın
+> linkini verip kurmanı istediyse, sadece bu sayfayı okuyup cevap verme; aşağıdaki adımları
+> **kendin uygula**:
+> 1. Repoyu kullanıcının bilgisayarına indir. Hedef klasör: kullanıcının ev dizininde `seo-geo-yerel`.
+>    - git varsa: `git clone https://github.com/MehmetEminSengur/seo-geo-yerel.git ~/seo-geo-yerel`
+>    - git yoksa: `https://github.com/MehmetEminSengur/seo-geo-yerel/archive/refs/heads/main.zip`
+>      dosyasını indirip açın (macOS/Linux: `curl -L … -o seo.zip && unzip seo.zip`, Windows PowerShell:
+>      `Invoke-WebRequest … -OutFile seo.zip; Expand-Archive seo.zip`), klasörün adını `seo-geo-yerel` yap.
+>    - Klasör zaten varsa yeniden indirme; içine gir ve `git pull` ile güncelle.
+> 2. O klasöre geç ve `AGENTS.md` dosyasını baştan sona oku.
+> 3. Kurulumu `AGENTS.md` → "Kurulum akışı" bölümündeki sırayla başlat: önce Node.js kontrolü, sonra
+>    kullanıcıya dört soruyu **teker teker** sor. Mağazaya kullanıcının onayı olmadan hiçbir şey yazma.
+
 E-ticaret mağazanızdaki **ürün, kategori ve blog** sayfalarını Google'a ve yapay zekâ aramalarına
 (ChatGPT, Gemini, Google yapay zekâ özeti) hazırlayan, **kendi bilgisayarınızda** çalışan sistem.
 
@@ -7,13 +20,13 @@ E-ticaret mağazanızdaki **ürün, kategori ve blog** sayfalarını Google'a ve
 - Metinleri **kendi yapay zekâ aboneliğiniz** yazar (Codex, Claude Code ya da Gemini CLI). Ek API ücreti yoktur.
 - Mağazanıza **onayınız olmadan hiçbir şey yazmaz**. Her değişiklikten önce yedek alır; istediğiniz an geri alırsınız.
 
-## En kolay kurulum: ajanınıza verin
+## En kolay kurulum: linki ajanınıza verin
 
-Bu klasörü bilgisayarınıza indirin, **Codex**, **Claude Code** ya da **Antigravity** ile açın ve şunu yazın:
+**Codex**, **Claude Code** ya da **Antigravity**'yi açın ve şunu yazın:
 
-> Bu sistemi mağazama kur.
+> https://github.com/MehmetEminSengur/seo-geo-yerel bu sistemi mağazama kur.
 
-Ajan `AGENTS.md` dosyasındaki adımları izler ve size dört soru sorar:
+Başka bir şey indirmenize gerek yok. Ajan repoyu bilgisayarınıza kendisi indirir, `AGENTS.md` dosyasındaki adımları izler ve size dört soru sorar:
 
 1. Mağaza adresiniz ve altyapınız (Shopify, IdeaSoft, İkas). API anahtarının nasıl alınacağını da gösterir.
 2. Kelime verisi: ücretsiz Google önerileri mi, DataForSEO mu?
