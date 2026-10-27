@@ -73,13 +73,19 @@ farklar, teslimat gibi. Bir de rakiplerinizin marka adları; onların adına say
   `preservePattern` ekle (ör. `"\\b2005\\b"`); eski metinde geçen bu bilgi yeni metinde yoksa
   taslak yayına alınmaz.
 
-### Soru 4: Nereden başlayalım?
-"Önce hangi kategorilerle başlayalım? (Hepsi ya da birkaç kategori)"
+### Soru 4: Nereden başlayalım, günde ne kadar?
+"Önce hangi kategorilerle başlayalım? (Hepsi ya da birkaç kategori) Bir de günde kaç blog yazısı
+yazılsın? (0 = blog yazılmasın; başlangıç için 1 öneririz)"
 
-- `config.json` → `scope.collections`: `"all"` ya da kategori adresleri listesi (ör.
+İki cevabı da `config.json` dosyasına **kaydet** ve kullanıcıya ne kaydettiğini tek cümleyle söyle:
+- `scope.collections`: `"all"` ya da kategori adresleri listesi (ör.
   `["aluminyum-folyo", "streç-film"]`). İlk denemede 1-2 kategori öner.
-- `schedule.batchSize`: günde kaç sayfa (varsayılan 5).
-- `blog.enabled` / `blog.perWeek`: haftada kaç blog yazısı (varsayılan 2).
+- `blog.perDay`: günde kaç blog yazısı (sayı). 0 derse `blog.enabled: false` yap. Blog konuları
+  "nasıl, nedir" gibi soru aramalarından seçilir; aynı konu ailesine 14 gün içinde ikinci yazı
+  yazılmaz, o yüzden konu biterse o gün daha az yazı çıkabilir.
+- `schedule.batchSize`: günde kaç ürün/kategori sayfası (varsayılan 5). Kullanıcı sormadıkça değiştirme.
+- Günde 5'ten fazla blog isterse `limits.text.dailyCalls` değerini
+  `(batchSize + blog.perDay) × 4` yap (varsayılan 40; abonelik sınırını korur).
 
 ### Metin ve görsel motoru
 - `engines.text`: senin hangi ajan olduğuna göre: Codex → `"codex"`, Claude Code → `"claude"`,
@@ -99,7 +105,8 @@ farklar, teslimat gibi. Bir de rakiplerinizin marka adları; onların adına say
 4. Kullanıcı onaylarsa: `node bin/seo-geo.mjs approve <numaralar>` ya da `approve --hepsi`,
    ardından `node bin/seo-geo.mjs apply`. Sistem önce yedek alır, sonra yazar, sonra yayındaki
    sayfayı kontrol eder.
-5. Geri almak isterse: `node bin/seo-geo.mjs restore <numara>`.
+5. Geri almak isterse: `node bin/seo-geo.mjs restore <numara>`. Sayfa eski metnine döner; sistemin
+   açtığı blog yazısı silinmez, yayından kaldırılıp taslağa çekilir.
 6. `node bin/seo-geo.mjs geo-kontrol` → yapay zekâ botlarının siteye girebildiğini ve şemaların
    sayfanın ilk HTML'inde olduğunu kontrol eder (mağazaya yazmaz). ✗ satırı varsa kullanıcıya sade
    Türkçeyle anlat ve `docs/geo-kontrol.md` içindeki ilgili düzeltmeyi adım adım göster. Ayarları

@@ -75,7 +75,7 @@ node bin/seo-geo.mjs geo-kontrol        # yapay zekâ botları siteye girebiliyo
 node bin/seo-geo.mjs preview            # taslakları üret, rapor aç (mağazaya yazmaz)
 node bin/seo-geo.mjs approve 3 5        # taslak onayla (approve --hepsi)
 node bin/seo-geo.mjs apply              # onaylananları yedekle → yaz → doğrula
-node bin/seo-geo.mjs restore 3          # bir değişikliği geri al
+node bin/seo-geo.mjs restore 3          # bir değişikliği geri al (blog yazısı taslağa çekilir)
 node bin/seo-geo.mjs status             # durum
 node bin/seo-geo.mjs zamanlayici-kur    # açılışta ve saatte bir otomatik çalış
 ```

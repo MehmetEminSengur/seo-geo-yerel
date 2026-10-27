@@ -1,5 +1,6 @@
 // Geri alma: bir işin uyguladığı değişikliği yedekteki eski haline döndürür. Sayfa bu arada elle
-// değiştirildiyse (canlı içerik bizim yazdığımız değilse) --zorla verilmeden dokunmaz.
+// değiştirildiyse (canlı içerik bizim yazdığımız değilse) --zorla verilmeden dokunmaz. Sistemin açtığı
+// blog yazısı silinmez, yayından kaldırılıp taslağa çekilir.
 import { loadBackup } from '../core/backups.mjs';
 import { canonicalHash } from '../core/content-hash.mjs';
 import { nowIso } from '../db/db.mjs';
@@ -8,7 +9,8 @@ export async function restoreJob(ctx, jobId, { force = false } = {}) {
   const { db, adapter } = ctx;
   const job = db.prepare('SELECT * FROM jobs WHERE id = ?').get(jobId);
   if (!job) throw new Error(`iş ${jobId} yok`);
-  if (job.kind !== 'update_page') throw new Error('yalnız sayfa güncellemeleri geri alınabilir; yeni blog yazısını platform panelinden silin');
+  if (job.kind === 'create_article') return unpublishArticle(ctx, job);
+  if (job.kind !== 'update_page') throw new Error(`bu iş türü geri alınamaz: ${job.kind}`);
   const backup = loadBackup(db, job.backup_id);
   if (!backup) throw new Error('bu işin geçerli bir yedeği yok');
   const page = db.prepare('SELECT * FROM pages WHERE id = ?').get(job.page_id);
@@ -23,4 +25,14 @@ export async function restoreJob(ctx, jobId, { force = false } = {}) {
     .run(backup.live.html, backup.live.seoTitle, backup.live.seoDescription, backup.content_hash, page.id);
   db.prepare('INSERT INTO job_events(job_id, from_state, to_state, note, at) VALUES (?,?,?,?,?)').run(job.id, job.state, job.state, `geri alındı (yedek #${backup.id})`, nowIso());
   return { status: 'geri alındı', page: page.handle, backup: backup.id };
+}
+
+async function unpublishArticle({ db, adapter }, job) {
+  if (!adapter.unpublishArticle) throw new Error('bu platformda blog yazısı yayından kaldırılamıyor; platform panelinden kaldırın');
+  const { handle } = JSON.parse(job.draft_json || '{}');
+  const id = JSON.parse(job.result_json || 'null')?.externalId || (handle && (await adapter.findArticle(handle))?.ref.externalId);
+  if (!id) throw new Error('blog yazısı mağazada bulunamadı');
+  await adapter.unpublishArticle(id);
+  db.prepare('INSERT INTO job_events(job_id, from_state, to_state, note, at) VALUES (?,?,?,?,?)').run(job.id, job.state, job.state, 'yayından kaldırıldı (taslak)', nowIso());
+  return { status: 'yayından kaldırıldı', yazi: handle, not: 'Yazı silinmedi; mağaza panelinde taslak olarak duruyor' };
 }

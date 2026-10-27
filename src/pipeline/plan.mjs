@@ -27,9 +27,11 @@ export function planPages(ctx, { limit, force = [] } = {}) {
 export function planBlogs(ctx, { now = Date.now() } = {}) {
   const { db, config } = ctx;
   if (!config.blog?.enabled) return [];
-  const weekAgo = new Date(now - 7 * 86_400_000).toISOString();
-  const thisWeek = db.prepare("SELECT count(*) n FROM jobs WHERE kind = 'create_article' AND created_at >= ?").get(weekAgo).n;
-  let room = Math.max(0, (config.blog.perWeek ?? 2) - thisWeek);
+  // Kurulumda sorulan blog.perDay son 24 saate, eski kurulumlardaki perWeek son 7 güne bakar.
+  const daily = config.blog.perDay != null;
+  const since = new Date(now - (daily ? 1 : 7) * 86_400_000).toISOString();
+  const recent = db.prepare("SELECT count(*) n FROM jobs WHERE kind = 'create_article' AND created_at >= ?").get(since).n;
+  let room = Math.max(0, Number(daily ? config.blog.perDay : config.blog.perWeek ?? 2) - recent);
   if (!room) return [];
   const used = new Set(db.prepare("SELECT target_keyword FROM jobs WHERE kind = 'create_article'").all().map((r) => norm(r.target_keyword)));
   const pool = db.prepare("SELECT * FROM keywords WHERE status = 'accepted' AND intent = 'informational' ORDER BY coalesce(volume,0) DESC, length(keyword)").all();

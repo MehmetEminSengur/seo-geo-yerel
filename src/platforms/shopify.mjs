@@ -243,6 +243,12 @@ export function createShopify(config, db, log = () => {}) {
       return { externalId: d.articleCreate.article.id, url: this.publicUrl('article', handle, blog.handle) };
     },
 
+    // restore: yeni yazı silinmez, taslağa çekilir; istenirse panelden tekrar yayınlanır.
+    async unpublishArticle(articleId) {
+      const d = await gql('mutation($id: ID!, $a: ArticleUpdateInput!) { articleUpdate(id: $id, article: $a) { article { id isPublished } userErrors { field message } } }', { id: articleId, a: { isPublished: false } });
+      userErrors(d.articleUpdate, 'articleUpdate');
+    },
+
     // Yerelde üretilen görseli Shopify Files'a yükler, herkese açık CDN adresini döner.
     async uploadImage(filePath, alt) {
       const bytes = readFileSync(filePath);

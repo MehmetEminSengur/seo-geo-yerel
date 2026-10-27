@@ -42,7 +42,8 @@ export async function keywords(ctx) {
 export async function planAndGenerate(ctx, opts = {}) {
   const pages = planPages(ctx, opts);
   const blogs = planBlogs(ctx);
-  const gen = await generatePlanned(ctx);
+  // Sayfa partisi ve o günün blogları aynı çalıştırmada üretilir; bloglar sayfa kotasını yemez.
+  const gen = await generatePlanned(ctx, { limit: (opts.limit ?? ctx.config.schedule.batchSize) + blogs.length });
   const report = writeReport(ctx);
   ctx.log('plan_generate', { planned_pages: pages.length, planned_blogs: blogs.length, ...gen, report: report.file });
   return { pages, blogs, ...gen, report: report.file };

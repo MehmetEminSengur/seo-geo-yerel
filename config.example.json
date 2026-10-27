@@ -30,6 +30,6 @@
     "batchSize": 5
   },
   "cooldownDays": 42,
-  "blog": { "enabled": true, "perWeek": 2, "clusterCooldownDays": 14 },
+  "blog": { "enabled": true, "perDay": 1, "clusterCooldownDays": 14 },
   "scope": { "collections": "all", "products": "all" }
 }
