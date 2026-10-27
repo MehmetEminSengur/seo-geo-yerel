@@ -2,6 +2,7 @@
   "store": {
     "platform": "shopify",
     "domain": "magazam.myshopify.com",
+    "auth": "cli",
     "publicUrl": "https://www.magazam.com",
     "brandName": "Mağaza Adı",
     "blogHandle": "news",

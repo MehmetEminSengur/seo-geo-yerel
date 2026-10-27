@@ -1,15 +1,35 @@
 // Shopify Admin GraphQL adaptörü.
-// Kimlik doğrulama iki yoldan biri:
+// Kimlik doğrulama üç yoldan biri (config.json → store.auth):
+//   cli (varsayılan): mağaza sahibi bir kez `node bin/seo-geo.mjs shopify-baglan` ile tarayıcıda
+//      onay verir. Anahtarı Shopify CLI saklar ve 24 saatte bir süresi dolunca tarayıcı açmadan
+//      kendisi yeniler; istekler `shopify store execute` ile gider. .env'de anahtar gerekmez.
+//   app: .env'de aşağıdaki anahtarlardan biri. Hiç tarayıcı istemez; 7/24 için en sağlam yol.
 //   1. SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET (Dev Dashboard uygulaması, 2026 sonrası standart):
 //      client_credentials ile ~24 saatlik token alınır, tokens tablosunda saklanır, süresi
 //      dolmadan 5 dk önce yenilenir. Dönen refresh token yok; bilgisayar kapansa da sorun olmaz.
 //   2. SHOPIFY_ADMIN_TOKEN (1 Ocak 2026 öncesi açılmış eski özel uygulamalar): sabit token.
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fetchJson } from './http.mjs';
 import { nowIso } from '../db/db.mjs';
+import { runCli } from '../engines/text/run-cli.mjs';
 
 const PAGE = 100;
+
+// shopify-baglan bu izinleri ister; yazma izni okumayı da kapsar.
+export const SHOPIFY_SCOPES = 'read_products,write_products,read_content,write_content,read_files,write_files,read_online_store_navigation';
+
+// store.auth yazılmamışsa: .env'de uygulama anahtarı varsa onu, yoksa Shopify CLI'ı kullan.
+export function shopifyAuthMode(config) {
+  if (config.store?.auth) return config.store.auth;
+  const env = config.env || {};
+  return env.SHOPIFY_ADMIN_TOKEN || env.SHOPIFY_CLIENT_ID ? 'app' : 'cli';
+}
+
+const clean = (s) => String(s).replace(/\x1b\[[0-9;]*[A-Za-z]/g, '').replace(/[│╭╮╰╯─]/g, ' ').replace(/\s+/g, ' ').trim();
+// "Loading stored store auth" her çalıştırmada yazılır; yalnız gerçek giriş hatalarına bakılır.
+const NEEDS_LOGIN = /No stored app authentication|Token refresh failed|missing required scopes|Run `shopify store auth`/i;
 
 export function createShopify(config, db, log = () => {}) {
   const env = config.env;
@@ -38,8 +58,37 @@ export function createShopify(config, db, log = () => {}) {
     return res.access_token;
   }
 
+  // CLI yolu: sorgu ve değişkenler dosyaya yazılır (uzun ürün açıklamaları komut satırına sığmaz).
+  async function gqlCli(query, variables) {
+    const dir = mkdtempSync(path.join(tmpdir(), 'seo-geo-shopify-'));
+    try {
+      writeFileSync(path.join(dir, 'q.graphql'), query);
+      writeFileSync(path.join(dir, 'v.json'), JSON.stringify(variables));
+      const out = path.join(dir, 'out.json');
+      await runCli('shopify', ['store', 'execute', '--store', domain, '--version', version, '--json', '--no-color',
+        '--query-file', path.join(dir, 'q.graphql'), '--variable-file', path.join(dir, 'v.json'), '--output-file', out,
+        ...(/^\s*mutation\b/.test(query) ? ['--allow-mutations'] : [])], { timeoutMs: 120_000 });
+      return { data: JSON.parse(readFileSync(out, 'utf8')) };
+    } catch (err) {
+      const msg = clean(err.message);
+      if (/THROTTLED/.test(msg)) return { errors: [{ extensions: { code: 'THROTTLED' } }] };
+      if (/bulunamadı/.test(msg)) throw new Error('Shopify CLI kurulu değil. Kurulum: npm install -g @shopify/cli');
+      if (NEEDS_LOGIN.test(msg)) throw new Error('Shopify bağlantısı yenilenmeli: node bin/seo-geo.mjs shopify-baglan (tarayıcıda bir kez onay)');
+      throw new Error(`shopify: ${msg.slice(-400)}`);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+
+  const viaCli = shopifyAuthMode(config) === 'cli';
+
   async function gql(query, variables = {}) {
     for (let attempt = 0; attempt < 5; attempt++) {
+      if (viaCli) {
+        const res = await gqlCli(query, variables);
+        if (res.errors) { await new Promise((r) => setTimeout(r, 2000 * (attempt + 1))); continue; }
+        return res.data;
+      }
       const token = await accessToken();
       const res = await fetchJson(`${adminBase}/admin/api/${version}/graphql.json`, {
         method: 'POST',

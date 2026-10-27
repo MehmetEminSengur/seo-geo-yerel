@@ -35,9 +35,16 @@ sade Türkçe konuş, her adımda ne yaptığını tek cümleyle söyle.
     Alan adları'nda görünür), `publicUrl`: müşterinin gördüğü adres.
   - IdeaSoft: `platform: "ideasoft"`, `domain: "<magaza>.myideasoft.com"`.
   - İkas: `platform: "ikas"`, `domain: "<magaza>.myikas.com"`.
-- API anahtarının nasıl alınacağını ilgili rehberden **adım adım** anlat:
-  `docs/api-anahtari/shopify.md`, `ideasoft.md`, `ikas.md`. Kullanıcı anahtarları `.env` dosyasına
-  kendisi yazsın.
+- **Shopify ise anahtar isteme.** `store.auth: "cli"` kalsın ve `node bin/seo-geo.mjs shopify-baglan`
+  çalıştır. Komut Shopify CLI'ı gerekirse kendisi kurar ve tarayıcıda Shopify'ın izin ekranını açar.
+  Kullanıcıya tek cümleyle söyle: "Tarayıcıda Shopify açılacak; mağaza sahibi hesabıyla girip
+  Yükle'ye basın, 4 dakikanız var." Okuma ve yazma izinleri birlikte istenir; ayrıca izin sorma.
+  Tarayıcıda "Unauthorized Access" çıkarsa açık olan hesap başka bir mağazanındır: doğru hesapla
+  (ya da gizli pencerede) girip komutu tekrar çalıştırın. Kullanıcı sistemin aylarca hiç onay
+  istemeden çalışmasını isterse uygulama anahtarı yolu `docs/api-anahtari/shopify.md` → "Kesintisiz
+  çalışma için" bölümünde.
+- IdeaSoft ve İkas için API anahtarının nasıl alınacağını ilgili rehberden **adım adım** anlat:
+  `docs/api-anahtari/ideasoft.md`, `ikas.md`. Kullanıcı anahtarları `.env` dosyasına kendisi yazsın.
 - Kullanıcı önce sistemi anahtarsız denemek isterse ve mağaza Shopify ise:
   `platform: "shopify-public"` (salt-okunur önizleme; mağazaya yazamaz, sonuçları dosya olarak verir).
 - IdeaSoft ve İkas şu an **yalnız okuma + dışa aktarma** destekler: sistem metinleri hazırlar,

@@ -14,6 +14,7 @@ import { runSetup } from '../src/setup.mjs';
 import { runGeoCheck } from '../src/site/geo-kontrol.mjs';
 import { installScheduler, removeScheduler } from '../src/core/os-scheduler.mjs';
 import { connectIdeasoft } from '../src/platforms/ideasoft-connect.mjs';
+import { connectShopify } from '../src/platforms/shopify-connect.mjs';
 import { loadConfig } from '../src/core/config.mjs';
 import { openDb } from '../src/db/db.mjs';
 
@@ -25,6 +26,7 @@ Kurulum
                           --url <adres> ile bir sayfa daha eklenir)
   zamanlayici-kur         Bilgisayar açılınca ve saatte bir otomatik çalışmayı kurar
   zamanlayici-kaldir      Otomatik çalışmayı kaldırır
+  shopify-baglan          Shopify'a ilk bağlantı: Shopify CLI'ı kurar, tarayıcıda tek onay (bir kez)
   ideasoft-baglan         IdeaSoft'a ilk bağlantı (tarayıcıda izin; bir kez)
 
 Günlük kullanım
@@ -58,6 +60,7 @@ async function main() {
   if (cmd === 'geo-kontrol') return runGeoCheck({ extraUrl: opt('--url') });
   if (cmd === 'zamanlayici-kur') return console.log(installScheduler({ dryRun: flag('--goster') }));
   if (cmd === 'zamanlayici-kaldir') return console.log(removeScheduler());
+  if (cmd === 'shopify-baglan') return console.log(connectShopify(loadConfig()));
   if (cmd === 'ideasoft-baglan') {
     const config = loadConfig();
     return console.log(await connectIdeasoft(config, openDb(config.dataDir)));

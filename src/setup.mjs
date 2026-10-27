@@ -4,6 +4,8 @@ import { loadConfig } from './core/config.mjs';
 import { probeEngines } from './engines/text/index.mjs';
 import { openDb } from './db/db.mjs';
 import { createAdapter } from './platforms/adapter.mjs';
+import { shopifyAuthMode } from './platforms/shopify.mjs';
+import { shopifyCliVersion } from './platforms/shopify-connect.mjs';
 
 const ok = (m) => console.log(`  ✓ ${m}`);
 const bad = (m) => console.log(`  ✗ ${m}`);
@@ -28,10 +30,15 @@ export async function runSetup() {
   if (config.brandFacts) ok(`brand-facts.json var (${config.brandFacts.facts?.length || 0} marka bilgisi, ${config.brandFacts.competitors?.length || 0} rakip)`);
   else info('brand-facts.json yok — marka bilgileri olmadan da çalışır ama önerilir');
 
-  console.log('\n3) Mağaza anahtarları (.env)');
   const platform = config.store?.platform;
-  const sets = NEEDS[platform];
-  if (!sets) { bad(`store.platform tanımsız ya da desteklenmiyor: ${platform}`); problems++; }
+  const viaCli = platform === 'shopify' && shopifyAuthMode(config) === 'cli';
+  const sets = viaCli ? [[]] : NEEDS[platform];
+  console.log(viaCli ? '\n3) Shopify bağlantısı (Shopify CLI)' : '\n3) Mağaza anahtarları (.env)');
+  if (viaCli) {
+    const v = shopifyCliVersion();
+    if (v) ok(`Shopify CLI ${v} kurulu; anahtar gerekmez`);
+    else { bad('Shopify CLI yok — node bin/seo-geo.mjs shopify-baglan kurar ve tarayıcıda tek onayla bağlar'); problems++; }
+  } else if (!sets) { bad(`store.platform tanımsız ya da desteklenmiyor: ${platform}`); problems++; }
   else {
     const complete = sets.find((keys) => keys.every((k) => config.env[k]));
     if (complete) ok(complete.length ? `${platform}: ${complete.join(', ')} tanımlı` : `${platform}: anahtar gerekmez (salt-okunur önizleme modu)`);

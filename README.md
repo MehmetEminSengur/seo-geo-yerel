@@ -28,7 +28,7 @@ E-ticaret mağazanızdaki **ürün, kategori ve blog** sayfalarını Google'a ve
 
 Başka bir şey indirmenize gerek yok. Ajan repoyu bilgisayarınıza kendisi indirir, `AGENTS.md` dosyasındaki adımları izler ve size dört soru sorar:
 
-1. Mağaza adresiniz ve altyapınız (Shopify, IdeaSoft, İkas). API anahtarının nasıl alınacağını da gösterir.
+1. Mağaza adresiniz ve altyapınız (Shopify, IdeaSoft, İkas). Shopify'da anahtar gerekmez: tarayıcıda tek onayla bağlanır. Diğerlerinde API anahtarının nasıl alınacağını gösterir.
 2. Kelime verisi: ücretsiz Google önerileri mi, DataForSEO mu?
 3. Asla silinmemesi gereken marka bilgileriniz (kuruluş yılı, ürün farkları) ve rakiplerinizin adları.
 4. Hangi kategorilerden başlanacağı.
@@ -69,6 +69,7 @@ Bunların hepsi gerçek bir mağazada yaşanmış hatalardan geliyor:
 ## Komutlar
 
 ```
+node bin/seo-geo.mjs shopify-baglan     # Shopify'a bağlan (tarayıcıda tek onay)
 node bin/seo-geo.mjs kontrol            # kurulum kontrolü
 node bin/seo-geo.mjs geo-kontrol        # yapay zekâ botları siteye girebiliyor mu, şema yerinde mi?
 node bin/seo-geo.mjs preview            # taslakları üret, rapor aç (mağazaya yazmaz)
@@ -85,7 +86,7 @@ Tam liste: `node bin/seo-geo.mjs yardim`
 
 - Node.js 22 veya üstü
 - Codex CLI, Claude Code ya da Gemini CLI (abonelikle oturum açılmış)
-- Mağaza API erişimi: [Shopify](docs/api-anahtari/shopify.md) · [IdeaSoft](docs/api-anahtari/ideasoft.md) · [İkas](docs/api-anahtari/ikas.md)
+- Mağaza bağlantısı: [Shopify](docs/api-anahtari/shopify.md) (Shopify CLI, tarayıcıda tek onay; gerekirse kendisi kurulur) · [IdeaSoft](docs/api-anahtari/ideasoft.md) · [İkas](docs/api-anahtari/ikas.md)
 
 ## Platform desteği
 
