@@ -55,6 +55,10 @@ Bunların hepsi gerçek bir mağazada yaşanmış hatalardan geliyor:
 - **42 gün kuralı:** Güncellenen sayfaya, Google'da sonucu ölçülene kadar dokunulmaz.
 - **Elle değişikliğe saygı:** Siz bir sayfayı panelden değiştirdiyseniz sistem üzerine yazmaz, size sorar.
 
+### Botlar sitenize girebiliyor mu?
+
+`geo-kontrol` komutu ChatGPT, Perplexity, Claude ve Google botlarının robots.txt'de ve güvenlik duvarında engellenip engellenmediğine, ürün ve blog şemasının sayfanın ilk HTML'inde (bu botlar JavaScript çalıştırmaz) olup olmadığına bakar. Ayrıntı ve düzeltmeler: [docs/geo-kontrol.md](docs/geo-kontrol.md).
+
 ## Bilgisayar kapanırsa ne olur?
 
 - Her değişiklik küçük adımlara bölünür ve her adım diske kaydedilir.
@@ -66,6 +70,7 @@ Bunların hepsi gerçek bir mağazada yaşanmış hatalardan geliyor:
 
 ```
 node bin/seo-geo.mjs kontrol            # kurulum kontrolü
+node bin/seo-geo.mjs geo-kontrol        # yapay zekâ botları siteye girebiliyor mu, şema yerinde mi?
 node bin/seo-geo.mjs preview            # taslakları üret, rapor aç (mağazaya yazmaz)
 node bin/seo-geo.mjs approve 3 5        # taslak onayla (approve --hepsi)
 node bin/seo-geo.mjs apply              # onaylananları yedekle → yaz → doğrula

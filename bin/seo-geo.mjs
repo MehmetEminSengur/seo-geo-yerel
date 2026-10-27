@@ -11,6 +11,7 @@ import { generatePlanned } from '../src/pipeline/generate.mjs';
 import { writeReport, approve, reject, collectImages } from '../src/pipeline/review.mjs';
 import { restoreJob } from '../src/pipeline/restore.mjs';
 import { runSetup } from '../src/setup.mjs';
+import { runGeoCheck } from '../src/site/geo-kontrol.mjs';
 import { installScheduler, removeScheduler } from '../src/core/os-scheduler.mjs';
 import { connectIdeasoft } from '../src/platforms/ideasoft-connect.mjs';
 import { loadConfig } from '../src/core/config.mjs';
@@ -20,6 +21,8 @@ const HELP = `Kullanım: node bin/seo-geo.mjs <komut> [seçenekler]
 
 Kurulum
   kontrol                 Ayarları, anahtarları, yapay zekâ motorunu ve mağaza bağlantısını sınar
+  geo-kontrol             Yapay zekâ botları siteye girebiliyor mu, şema ilk HTML'de mi? (salt-okunur;
+                          --url <adres> ile bir sayfa daha eklenir)
   zamanlayici-kur         Bilgisayar açılınca ve saatte bir otomatik çalışmayı kurar
   zamanlayici-kaldir      Otomatik çalışmayı kaldırır
   ideasoft-baglan         IdeaSoft'a ilk bağlantı (tarayıcıda izin; bir kez)
@@ -47,11 +50,12 @@ const opt = (f) => { const i = rest.indexOf(f); return i >= 0 ? rest[i + 1] : un
 const ids = rest.filter((x) => /^\d+$/.test(x));
 
 // Onay/ret/rapor yalnız veritabanı transaction'ı kullanır; uzun süren bir tick sürerken de çalışabilmeli.
-const READ_ONLY = new Set(['yardim', 'help', 'status', 'kontrol', 'zamanlayici-kur', 'zamanlayici-kaldir', 'approve', 'reject', 'review', 'images']);
+const READ_ONLY = new Set(['yardim', 'help', 'status', 'kontrol', 'geo-kontrol', 'zamanlayici-kur', 'zamanlayici-kaldir', 'approve', 'reject', 'review', 'images']);
 
 async function main() {
   if (cmd === 'yardim' || cmd === 'help' || cmd === '--help') return console.log(HELP);
   if (cmd === 'kontrol') return runSetup();
+  if (cmd === 'geo-kontrol') return runGeoCheck({ extraUrl: opt('--url') });
   if (cmd === 'zamanlayici-kur') return console.log(installScheduler({ dryRun: flag('--goster') }));
   if (cmd === 'zamanlayici-kaldir') return console.log(removeScheduler());
   if (cmd === 'ideasoft-baglan') {

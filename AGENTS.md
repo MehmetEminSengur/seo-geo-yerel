@@ -93,6 +93,10 @@ farklar, teslimat gibi. Bir de rakiplerinizin marka adları; onların adına say
    ardından `node bin/seo-geo.mjs apply`. Sistem önce yedek alır, sonra yazar, sonra yayındaki
    sayfayı kontrol eder.
 5. Geri almak isterse: `node bin/seo-geo.mjs restore <numara>`.
+6. `node bin/seo-geo.mjs geo-kontrol` → yapay zekâ botlarının siteye girebildiğini ve şemaların
+   sayfanın ilk HTML'inde olduğunu kontrol eder (mağazaya yazmaz). ✗ satırı varsa kullanıcıya sade
+   Türkçeyle anlat ve `docs/geo-kontrol.md` içindeki ilgili düzeltmeyi adım adım göster. Ayarları
+   (robots.txt, tema, Cloudflare) kullanıcı kendisi değiştirir; sen değiştirme.
 
 ### Adım 6: Otomatik çalışma
 Kullanıcı isterse: `node bin/seo-geo.mjs zamanlayici-kur`. Bilgisayar açılınca ve saatte bir
